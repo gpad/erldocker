@@ -36,7 +36,12 @@ call({Method, stream}, Body, URL) when is_binary(URL) andalso is_binary(Body) ->
 
 call(Method, Body, URL) when is_binary(URL) andalso is_binary(Body) ->
     error_logger:info_msg("api call: ~p ~s", [Method, binary_to_list(URL)]),
-    ReqHeaders = [{<<"Content-Type">>, <<"application/json">>}],
+    ReqHeaders = case Body of
+                     <<>> ->
+                         [];
+                     _ ->
+                         [{<<"Content-Type">>, <<"application/json">>}]
+                 end,
     case hackney:request(Method, URL, ReqHeaders, Body, ?OPTIONS) of
         {ok, StatusCode, RespHeaders, Client} ->
             {ok, RespBody, _Client1} = hackney:body(Client),
