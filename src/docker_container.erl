@@ -37,7 +37,10 @@ container(CID) ->
 % @doc Creates a container that can then be started.
 % http://docs.docker.io/en/latest/api/docker_remote_api_v1.4/#create-a-container
 create(ConfigBin) ->
-    erldocker_api:post([containers, create], [], jsx:encode(ConfigBin)).
+    {ok, [{<<"Id">>, Id}, {<<"Warnings">>, Warnings}]} =
+        erldocker_api:post([containers, create], [], jsx:encode(ConfigBin)),
+    log_warnings(Warnings),
+    {ok, Id}.
 
 % @doc List processes running inside the container id.
 top(CID) ->
@@ -53,8 +56,9 @@ export(CID) ->
     erldocker_api:get([containers, CID, export]).
 
 % @doc Start the container.
-start(CID, _Config) ->
-    erldocker_api:post([containers, CID, start]).
+start(CID, Config) ->
+    {ok, {204, <<>>}} = erldocker_api:post([containers, CID, start], [], jsx:encode(Config)),
+    ok.
 
 % @doc Allows to bind a directory in the host to the container.
 % Similar to the docker run command with the -b="/host:/mnt".
@@ -137,3 +141,8 @@ default_args(create) ->
 
 default_args(_) ->
     [].
+
+log_warnings([]) ->
+    ok;
+log_warnings(_Warnings) ->
+    ok.
