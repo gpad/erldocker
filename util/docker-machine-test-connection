@@ -1,0 +1,9 @@
+INSTANCE=${1:- you must provide the docker-machine instance name as the argument to this script}
+
+CMD="$(find /usr/local/Cellar/openssl -maxdepth 1 -mindepth 1 | sort -n | head -n1 )/bin/openssl"
+
+eval $(docker-machine env ${INSTANCE})
+
+export DOCKER_HOST=$(echo $DOCKER_HOST| sed 's_tcp://__')
+
+$CMD s_client -prexit -connect $DOCKER_HOST -CAfile /Users/${USER}/.docker/machine/certs/cert.pem -key /Users/${USER}/.docker/machine/certs/key.pem -CAfile /Users/${USER}/.docker/machine/certs/ca.pem
