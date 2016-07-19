@@ -7,3 +7,5 @@ vmling
 /log/
 On branch master
 *stunnel.conf
+_build/
+rebar
