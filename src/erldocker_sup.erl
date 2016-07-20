@@ -23,10 +23,10 @@ start_link() ->
 %% ===================================================================
 
 init([]) ->
+    lager:debug(">>> application:get_env(erldocker, unixbridge_port):  ~p", [application:get_env(erldocker, unixbridge_port)]),
     Children = case application:get_env(erldocker, unixbridge_port) of
         {ok, I} when is_integer(I) -> [?CHILD(erldocker_unixbridge, worker, [I])];
         _ -> []
     end,
 
     {ok, { {one_for_one, 5, 10}, Children} }.
-

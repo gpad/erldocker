@@ -9,7 +9,8 @@
                  hackney,
                  jsx,
                  erlsh,
-                 fn
+                 fn,
+                 lager
                  ]},
   {mod, { erldocker_app, []}},
   {env, []}
